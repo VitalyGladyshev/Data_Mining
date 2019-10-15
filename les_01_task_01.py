@@ -20,3 +20,4 @@ for repo in repos.json():
     if not repo['private']:
         print(repo['html_url'])
         print(repo['full_name'])
+        print(repo['name'])
