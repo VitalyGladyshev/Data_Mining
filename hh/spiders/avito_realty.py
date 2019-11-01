@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy.http import HtmlResponse
+from scrapy.loader import ItemLoader
+from hh.items import AvitoRealEstate
 
 
 class AvitoRealtySpider(scrapy.Spider):
@@ -16,15 +18,21 @@ class AvitoRealtySpider(scrapy.Spider):
         yield response.follow(pagination, callback=self.parse)
 
     def parse_kv_page(self, response: HtmlResponse, kv_url):
-        name = response.xpath('//span[contains(@class, "title-info-title-text")]/text()').extract_first()
-        price = response.xpath('//span[contains(@class, "js-item-price")]/text()').extract_first()
-        address = response.xpath('//span[contains(@class, "item-address__string")]/text()').extract_first()
+        # name = response.xpath('//span[contains(@class, "title-info-title-text")]/text()').extract_first()
+        # price = response.xpath('//span[contains(@class, "js-item-price")]/text()').extract_first()
+        # address = response.xpath('//span[contains(@class, "item-address__string")]/text()').extract_first()
+        addition_item = ItemLoader(AvitoRealEstate(), response)
+        addition_item.add_xpath('title', '//h1[@class="title-info-title"]/span[@itemprop="name"]/text()')
+        addition_item.add_xpath('price', '//div[@class="item-price"]//span[@class="js-item-price"]/@content')
+        addition_item.add_xpath('photos', '//div[contains(@class, "js-gallery-img-frame")]/@data-url')
+        addition_item.add_xpath('params', '//div[@class="item-params"]/ul[@class="item-params-list"]/li')
+        yield addition_item.load_item()
 
-        item = {'name': name,
-                'url': kv_url,
-                'price': price,
-                'address': address}
-        yield item
+        # item = {'name': name,
+        #         'url': kv_url,
+        #         'price': price,
+        #         'address': address}
+        # yield item
 
         # tag_keywords = response.xpath('//i[contains(@class, "i-tag")]/@keywords').extract_first()
         # tags = []
