@@ -50,3 +50,12 @@ class AvitoRealAuto(scrapy.Item):
     params = scrapy.Field(input_processor=MapCompose(cleaner_params), output_processor=dict_params)
     photos = scrapy.Field(input_processor=MapCompose(cleaner_photo))
     url = scrapy.Field(output_processor=TakeFirst())
+
+
+class ZillowLoader(scrapy.Item):
+    _id = scrapy.Field()    # нужно для работы с Mongo
+    title = scrapy.Field(output_processor=TakeFirst())
+    price = scrapy.Field(output_processor=TakeFirst())
+    image = scrapy.Field(output_processor=TakeFirst())
+    params = scrapy.Field(output_processor=TakeFirst())
+    url = scrapy.Field(output_processor=TakeFirst())
